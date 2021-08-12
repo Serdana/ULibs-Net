@@ -8,7 +8,6 @@ import java.util.Map;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.Unpooled;
-import io.netty.channel.ChannelHandlerContext;
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
@@ -16,7 +15,7 @@ import main.java.ulibs.common.utils.exceptions.ByteException;
 import main.java.ulibs.net.exceptions.NetworkException;
 import main.java.ulibs.net.exceptions.NetworkException.Reason;
 import main.java.ulibs.net.message.Message;
-import main.java.ulibs.net.message.MessageHandler;
+import main.java.ulibs.net.message.MessageH;
 import main.java.ulibs.net.message.data.MessageData;
 import main.java.ulibs.net.message.data.MsgDataBoolean;
 import main.java.ulibs.net.message.data.MsgDataDouble;
@@ -30,11 +29,12 @@ import main.java.ulibs.net.message.data.MsgDataString;
 import main.java.ulibs.net.message.data.MsgDataVec2d;
 import main.java.ulibs.net.message.data.MsgDataVec2f;
 import main.java.ulibs.net.message.data.MsgDataVec2i;
+import main.java.ulibs.net.utils.Connection;
 
-public class NetworkHandler {
+public class NetworkH {
 	private static final Map<Short, Class<? extends Message>> MESSAGE_MAP = new HashMap<Short, Class<? extends Message>>();
 	private static final Map<Class<? extends Message>, Short> MESSAGE_MAP_REV = new HashMap<Class<? extends Message>, Short>();
-	private static final Map<Class<? extends Message>, MessageHandler<?>> HANDLER_MAP = new HashMap<Class<? extends Message>, MessageHandler<?>>();
+	private static final Map<Class<? extends Message>, MessageH<?>> HANDLER_MAP = new HashMap<Class<? extends Message>, MessageH<?>>();
 	private static final Map<Class<? extends MessageData<?>>, Short> DATA_TYPE_MAP = new HashMap<Class<? extends MessageData<?>>, Short>();
 	private static final Map<Short, Class<? extends MessageData<?>>> DATA_TYPE_MAP_REV = new HashMap<Short, Class<? extends MessageData<?>>>();
 	
@@ -77,7 +77,7 @@ public class NetworkHandler {
 		MESSAGE_MAP_REV.put(msg, n);
 	}
 	
-	public static final void registerHandler(MessageHandler<?> handler) {
+	public static final void registerHandler(MessageH<?> handler) {
 		Console.print(WarningType.RegisterDebug,
 				"Registered handler '" + handler.getClass().getSimpleName() + "' with the message '" + handler.getMessageClazz().getSimpleName() + "'");
 		HANDLER_MAP.put(handler.getMessageClazz(), handler);
@@ -91,7 +91,7 @@ public class NetworkHandler {
 		return DATA_TYPE_MAP_REV.get(id);
 	}
 	
-	public static final void sendMessage(ChannelHandlerContext ctx, Message msg) {
+	public static final void sendMessage(Connection con, Message msg) {
 		if (msg == null) {
 			Console.print(WarningType.Error, "Tried to send an invalid Message!", new NetworkException(Reason.invalid_message));
 			return;
@@ -115,10 +115,10 @@ public class NetworkHandler {
 		buf.put(body);
 		buf.flip();
 		
-		ctx.writeAndFlush(Unpooled.wrappedBuffer(buf.array()));
+		con.send(Unpooled.wrappedBuffer(buf.array()));
 	}
 	
-	public static final void readMessage(ChannelHandlerContext ctx, ByteBuf in) {
+	public static final void readMessage(Connection con, ByteBuf in) {
 		List<Byte> bytes = new ArrayList<Byte>();
 		while (in.isReadable()) {
 			bytes.add(in.readByte());
@@ -157,7 +157,7 @@ public class NetworkHandler {
 				}
 				
 				i += size + 3;
-				HANDLER_MAP.get(m).processMessage(ctx, tempBytes);
+				HANDLER_MAP.get(m).processMessage(con, tempBytes);
 			} catch (ByteException e) {
 				Console.print(WarningType.Warning, e.getMessage(), e);
 			}

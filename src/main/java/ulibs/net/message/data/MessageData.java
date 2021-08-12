@@ -1,6 +1,6 @@
 package main.java.ulibs.net.message.data;
 
-import main.java.ulibs.net.NetworkHandler;
+import main.java.ulibs.net.NetworkH;
 
 public abstract class MessageData<T> {
 	public final short key;
@@ -8,7 +8,7 @@ public abstract class MessageData<T> {
 	private byte[] cache;
 	
 	public MessageData() {
-		this.key = NetworkHandler.getDataTypeID(getClass());
+		this.key = NetworkH.getDataTypeID(getClass());
 	}
 	
 	public MessageData<T> setData(T data) {

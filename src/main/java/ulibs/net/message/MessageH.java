@@ -3,18 +3,18 @@ package main.java.ulibs.net.message;
 import java.util.ArrayList;
 import java.util.List;
 
-import io.netty.channel.ChannelHandlerContext;
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
 import main.java.ulibs.common.utils.exceptions.ByteException;
-import main.java.ulibs.net.NetworkHandler;
+import main.java.ulibs.net.NetworkH;
 import main.java.ulibs.net.exceptions.NetworkException;
 import main.java.ulibs.net.exceptions.NetworkException.Reason;
 import main.java.ulibs.net.message.data.MessageData;
+import main.java.ulibs.net.utils.Connection;
 
-public abstract class MessageHandler<T extends Message> {
-	public final void processMessage(ChannelHandlerContext ctx, byte[] datas) {
+public abstract class MessageH<T extends Message> {
+	public final void processMessage(Connection con, byte[] datas) {
 		List<Byte> bytes = new ArrayList<Byte>();
 		for (byte b : datas) {
 			bytes.add(b);
@@ -30,7 +30,7 @@ public abstract class MessageHandler<T extends Message> {
 				
 				short id = ByteH.getShort(tempBytes);
 				
-				Class<? extends MessageData<?>> msgClazz = NetworkHandler.getDataTypeFromID(id);
+				Class<? extends MessageData<?>> msgClazz = NetworkH.getDataTypeFromID(id);
 				if (msgClazz == null) {
 					Console.print(WarningType.Warning, "Recieved Unknown Message Data Type!", new NetworkException(Reason.unknown_message_data));
 					return;
@@ -67,10 +67,10 @@ public abstract class MessageHandler<T extends Message> {
 			}
 		}
 		
-		handleMessage(ctx, dataList);
+		handleMessage(con, dataList);
 	}
 	
-	protected abstract void handleMessage(ChannelHandlerContext ctx, List<MessageData<?>> datas);
+	protected abstract void handleMessage(Connection con, List<MessageData<?>> datas);
 	
 	public abstract Class<T> getMessageClazz();
 }

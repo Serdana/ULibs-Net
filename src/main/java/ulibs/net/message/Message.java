@@ -6,7 +6,7 @@ import java.util.List;
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.Console;
 import main.java.ulibs.common.utils.Console.WarningType;
-import main.java.ulibs.net.NetworkHandler;
+import main.java.ulibs.net.NetworkH;
 import main.java.ulibs.net.exceptions.NetworkException;
 import main.java.ulibs.net.exceptions.NetworkException.Reason;
 import main.java.ulibs.net.message.data.MessageData;
@@ -32,8 +32,8 @@ public abstract class Message {
 			}
 			
 			byte[] forBytes = data.defaultSize() == 0 ?
-					ByteH.combineBytes(ByteH.getBytes(NetworkHandler.getDataTypeID(data.getClass())), ByteH.getBytes((short) dataBytes.length), dataBytes) :
-					ByteH.combineBytes(ByteH.getBytes(NetworkHandler.getDataTypeID(data.getClass())), dataBytes);
+					ByteH.combineBytes(ByteH.getBytes(NetworkH.getDataTypeID(data.getClass())), ByteH.getBytes((short) dataBytes.length), dataBytes) :
+					ByteH.combineBytes(ByteH.getBytes(NetworkH.getDataTypeID(data.getClass())), dataBytes);
 			
 			for (byte b : forBytes) {
 				bytes.add(b);
