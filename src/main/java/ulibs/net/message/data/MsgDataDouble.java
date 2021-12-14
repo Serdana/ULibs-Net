@@ -4,6 +4,10 @@ import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.exceptions.ByteException;
 
 public class MsgDataDouble extends MessageData<Double> {
+	public MsgDataDouble(double data) {
+		super(data);
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		return ByteH.getBytes(data);

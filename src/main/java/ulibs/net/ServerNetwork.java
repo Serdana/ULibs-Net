@@ -100,8 +100,8 @@ public abstract class ServerNetwork<T extends ConnectionWrap<T, ?>> implements R
 	}
 	
 	//@formatter:off
-	protected abstract void onConnect();
-	protected abstract void onDisconnect();
+	protected abstract void onConnect(T con);
+	protected abstract void onDisconnect(T con);
 	//@formatter:on
 	
 	@Override
@@ -122,7 +122,7 @@ public abstract class ServerNetwork<T extends ConnectionWrap<T, ?>> implements R
 						@Override
 						public void channelRegistered(ChannelHandlerContext ctx) throws Exception {
 							unsetConnections.add(new Connection(ctx));
-							onConnect();
+							onConnect(getConnection(ctx));
 						}
 						
 						@Override
@@ -130,8 +130,9 @@ public abstract class ServerNetwork<T extends ConnectionWrap<T, ?>> implements R
 							String ip = ((InetSocketAddress) ctx.channel().remoteAddress()).getAddress().getHostAddress();
 							Console.print(WarningType.Debug, ip + " lost connection!");
 							
+							T c = getConnection(ctx);
 							removeConnection(ctx);
-							onDisconnect();
+							onDisconnect(c);
 						}
 						
 						@Override
@@ -152,7 +153,7 @@ public abstract class ServerNetwork<T extends ConnectionWrap<T, ?>> implements R
 			}).option(ChannelOption.SO_BACKLOG, 128).childOption(ChannelOption.SO_KEEPALIVE, true);
 			
 			try {
-				ChannelFuture f = b.bind(7777).sync();
+				ChannelFuture f = b.bind(getPort()).sync();
 				f.channel().closeFuture().sync();
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -162,4 +163,6 @@ public abstract class ServerNetwork<T extends ConnectionWrap<T, ?>> implements R
 			bossGroup.shutdownGracefully();
 		}
 	}
+	
+	public abstract int getPort();
 }

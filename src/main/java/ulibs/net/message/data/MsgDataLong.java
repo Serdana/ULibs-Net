@@ -3,8 +3,8 @@ package main.java.ulibs.net.message.data;
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.exceptions.ByteException;
 
-public class MsgDataInteger extends MessageData<Integer> {
-	public MsgDataInteger(int data) {
+public class MsgDataLong extends MessageData<Long> {
+	public MsgDataLong(long data) {
 		super(data);
 	}
 	
@@ -16,7 +16,7 @@ public class MsgDataInteger extends MessageData<Integer> {
 	@Override
 	public void fromBytes(byte[] data) {
 		try {
-			this.data = ByteH.getInt(data);
+			this.data = ByteH.getLong(data);
 		} catch (ByteException e) {
 			e.printStackTrace();
 		}

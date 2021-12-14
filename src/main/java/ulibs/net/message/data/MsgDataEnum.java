@@ -1,6 +1,10 @@
 package main.java.ulibs.net.message.data;
 
 public class MsgDataEnum extends MessageData<Byte> {
+	public <T extends Enum<T>> MsgDataEnum(Enum<T> data) {
+		super((byte) data.ordinal());
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		return new byte[] { data };
@@ -15,11 +19,6 @@ public class MsgDataEnum extends MessageData<Byte> {
 		return clazz.getEnumConstants()[data];
 	}
 	
-	public <T extends Enum<T>> MsgDataEnum setEnum(T e) {
-		this.data = (byte) e.ordinal();
-		return this;
-	}
-	
 	@Override
 	public short defaultSize() {
 		return 1;
@@ -30,12 +29,5 @@ public class MsgDataEnum extends MessageData<Byte> {
 	@Override
 	public Byte getData() {
 		return super.getData();
-	}
-	
-	/** Use {@link MsgDataEnum#setEnum} instead! */
-	@Deprecated
-	@Override
-	public MessageData<Byte> setData(Byte data) {
-		return super.setData(data);
 	}
 }

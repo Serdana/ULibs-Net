@@ -1,5 +1,6 @@
 package main.java.ulibs.net.message;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,7 +38,7 @@ public abstract class MessageH<T extends Message> {
 				}
 				
 				try {
-					MessageData<?> obj = msgClazz.newInstance();
+					MessageData<?> obj = (MessageData<?>) msgClazz.getConstructors()[0].newInstance((Object) null);
 					
 					boolean hasSize = obj.defaultSize() == 0;
 					short size = 0;
@@ -59,7 +60,7 @@ public abstract class MessageH<T extends Message> {
 					obj.fromBytes(tempBytes);
 					dataList.add(obj);
 					i += size + (hasSize ? 3 : 1);
-				} catch (InstantiationException | IllegalAccessException e) {
+				} catch (InstantiationException | IllegalAccessException | IllegalArgumentException | InvocationTargetException | SecurityException e) {
 					e.printStackTrace();
 				}
 			} catch (ByteException e) {

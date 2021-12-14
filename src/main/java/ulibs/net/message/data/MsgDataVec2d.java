@@ -5,6 +5,10 @@ import main.java.ulibs.common.math.Vec2d;
 import main.java.ulibs.common.utils.exceptions.ByteException;
 
 public class MsgDataVec2d extends MessageData<Vec2d> {
+	public MsgDataVec2d(Vec2d data) {
+		super(data);
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		return ByteH.combineBytes(ByteH.getBytes(data.getX()), ByteH.getBytes(data.getY()));

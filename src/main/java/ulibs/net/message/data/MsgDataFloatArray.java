@@ -7,6 +7,10 @@ import main.java.ulibs.common.utils.exceptions.ByteException;
 import main.java.ulibs.net.message.data.MsgDataFloatArray.ArrayWrap;
 
 public class MsgDataFloatArray extends MessageData<ArrayWrap> {
+	public MsgDataFloatArray(float[] data) {
+		super(new ArrayWrap(data));
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		ByteBuffer buf = ByteBuffer.allocate(data.array.length * 4);
@@ -27,6 +31,7 @@ public class MsgDataFloatArray extends MessageData<ArrayWrap> {
 			tempBytes[1] = data[i * 4 + 1];
 			tempBytes[2] = data[i * 4 + 2];
 			tempBytes[3] = data[i * 4 + 3];
+			
 			try {
 				floats[i] = ByteH.getFloat(tempBytes);
 			} catch (ByteException e) {
@@ -42,10 +47,10 @@ public class MsgDataFloatArray extends MessageData<ArrayWrap> {
 		return 0;
 	}
 	
-	public static class ArrayWrap {
-		public final float[] array;
+	static class ArrayWrap {
+		private final float[] array;
 		
-		public ArrayWrap(float[] array) {
+		private ArrayWrap(float[] array) {
 			this.array = array;
 		}
 	}

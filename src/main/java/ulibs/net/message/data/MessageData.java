@@ -7,13 +7,9 @@ public abstract class MessageData<T> {
 	protected T data;
 	private byte[] cache;
 	
-	public MessageData() {
+	public MessageData(T data) {
 		this.key = NetworkH.getDataTypeID(getClass());
-	}
-	
-	public MessageData<T> setData(T data) {
 		this.data = data;
-		return this;
 	}
 	
 	//@formatter:off

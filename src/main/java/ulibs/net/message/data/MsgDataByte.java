@@ -1,10 +1,9 @@
 package main.java.ulibs.net.message.data;
 
 import main.java.ulibs.common.helpers.ByteH;
-import main.java.ulibs.common.utils.exceptions.ByteException;
 
-public class MsgDataInteger extends MessageData<Integer> {
-	public MsgDataInteger(int data) {
+public class MsgDataByte extends MessageData<Byte> {
+	public MsgDataByte(byte data) {
 		super(data);
 	}
 	
@@ -15,15 +14,11 @@ public class MsgDataInteger extends MessageData<Integer> {
 	
 	@Override
 	public void fromBytes(byte[] data) {
-		try {
-			this.data = ByteH.getInt(data);
-		} catch (ByteException e) {
-			e.printStackTrace();
-		}
+		this.data = data[0];
 	}
 	
 	@Override
 	public short defaultSize() {
-		return 4;
+		return 1;
 	}
 }

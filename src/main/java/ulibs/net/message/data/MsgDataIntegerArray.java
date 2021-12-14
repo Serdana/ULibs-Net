@@ -4,9 +4,13 @@ import java.nio.ByteBuffer;
 
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.exceptions.ByteException;
-import main.java.ulibs.net.message.data.MsgDataIntArray.ArrayWrap;
+import main.java.ulibs.net.message.data.MsgDataIntegerArray.ArrayWrap;
 
-public class MsgDataIntArray extends MessageData<ArrayWrap> {
+public class MsgDataIntegerArray extends MessageData<ArrayWrap> {
+	public MsgDataIntegerArray(int[] data) {
+		super(new ArrayWrap(data));
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		ByteBuffer buf = ByteBuffer.allocate(data.array.length * 4);
@@ -27,6 +31,7 @@ public class MsgDataIntArray extends MessageData<ArrayWrap> {
 			tempBytes[1] = data[i * 4 + 1];
 			tempBytes[2] = data[i * 4 + 2];
 			tempBytes[3] = data[i * 4 + 3];
+			
 			try {
 				ints[i] = ByteH.getInt(tempBytes);
 			} catch (ByteException e) {
@@ -42,10 +47,10 @@ public class MsgDataIntArray extends MessageData<ArrayWrap> {
 		return 0;
 	}
 	
-	public static class ArrayWrap {
-		public final int[] array;
+	static class ArrayWrap {
+		private final int[] array;
 		
-		public ArrayWrap(int[] array) {
+		private ArrayWrap(int[] array) {
 			this.array = array;
 		}
 	}

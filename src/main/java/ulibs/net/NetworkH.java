@@ -18,13 +18,20 @@ import main.java.ulibs.net.message.Message;
 import main.java.ulibs.net.message.MessageH;
 import main.java.ulibs.net.message.data.MessageData;
 import main.java.ulibs.net.message.data.MsgDataBoolean;
+import main.java.ulibs.net.message.data.MsgDataBooleanArray;
+import main.java.ulibs.net.message.data.MsgDataByte;
+import main.java.ulibs.net.message.data.MsgDataByteArray;
 import main.java.ulibs.net.message.data.MsgDataDouble;
 import main.java.ulibs.net.message.data.MsgDataDoubleArray;
 import main.java.ulibs.net.message.data.MsgDataEnum;
 import main.java.ulibs.net.message.data.MsgDataFloat;
 import main.java.ulibs.net.message.data.MsgDataFloatArray;
-import main.java.ulibs.net.message.data.MsgDataIntArray;
 import main.java.ulibs.net.message.data.MsgDataInteger;
+import main.java.ulibs.net.message.data.MsgDataIntegerArray;
+import main.java.ulibs.net.message.data.MsgDataLong;
+import main.java.ulibs.net.message.data.MsgDataLongArray;
+import main.java.ulibs.net.message.data.MsgDataShort;
+import main.java.ulibs.net.message.data.MsgDataShortArray;
 import main.java.ulibs.net.message.data.MsgDataString;
 import main.java.ulibs.net.message.data.MsgDataVec2d;
 import main.java.ulibs.net.message.data.MsgDataVec2f;
@@ -39,16 +46,25 @@ public class NetworkH {
 	private static final Map<Short, Class<? extends MessageData<?>>> DATA_TYPE_MAP_REV = new HashMap<Short, Class<? extends MessageData<?>>>();
 	
 	static {
-		registerMessageData(MsgDataBoolean.class);
-		registerMessageData(MsgDataEnum.class);
 		registerMessageData(MsgDataFloat.class);
 		registerMessageData(MsgDataDouble.class);
+		registerMessageData(MsgDataByte.class);
+		registerMessageData(MsgDataShort.class);
 		registerMessageData(MsgDataInteger.class);
-		registerMessageData(MsgDataString.class);
+		registerMessageData(MsgDataLong.class);
 		
-		registerMessageData(MsgDataIntArray.class);
+		registerMessageData(MsgDataString.class);
+		registerMessageData(MsgDataBoolean.class);
+		registerMessageData(MsgDataEnum.class);
+		
 		registerMessageData(MsgDataFloatArray.class);
 		registerMessageData(MsgDataDoubleArray.class);
+		registerMessageData(MsgDataByteArray.class);
+		registerMessageData(MsgDataShortArray.class);
+		registerMessageData(MsgDataIntegerArray.class);
+		registerMessageData(MsgDataLongArray.class);
+		
+		registerMessageData(MsgDataBooleanArray.class);
 		
 		registerMessageData(MsgDataVec2i.class);
 		registerMessageData(MsgDataVec2f.class);
@@ -118,7 +134,7 @@ public class NetworkH {
 		con.send(Unpooled.wrappedBuffer(buf.array()));
 	}
 	
-	public static final void readMessage(Connection con, ByteBuf in) {
+	static final void readMessage(Connection con, ByteBuf in) {
 		List<Byte> bytes = new ArrayList<Byte>();
 		while (in.isReadable()) {
 			bytes.add(in.readByte());
@@ -161,6 +177,43 @@ public class NetworkH {
 			} catch (ByteException e) {
 				Console.print(WarningType.Warning, e.getMessage(), e);
 			}
+		}
+	}
+	
+	public static boolean isValidIP(String ip) {
+		if (ip == null || ip.isEmpty()) {
+			return false;
+		}
+		
+		String[] parts = ip.split("\\.", -1);
+		if (parts.length != 4) {
+			return false;
+		}
+		
+		try {
+			for (String s : parts) {
+				int i = Integer.parseInt(s);
+				if (i < 0 || i > 255) {
+					return false;
+				}
+			}
+		} catch (NumberFormatException e) {
+			return false;
+		}
+		
+		return true;
+	}
+	
+	public static boolean isValidPort(String port) {
+		if (port == null || port.isEmpty()) {
+			return false;
+		}
+		
+		try {
+			int i = Integer.parseInt(port);
+			return i < 65535 && i > 0;
+		} catch (NumberFormatException e) {
+			return false;
 		}
 	}
 }

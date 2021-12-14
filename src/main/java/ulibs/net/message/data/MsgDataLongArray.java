@@ -4,18 +4,18 @@ import java.nio.ByteBuffer;
 
 import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.exceptions.ByteException;
-import main.java.ulibs.net.message.data.MsgDataDoubleArray.ArrayWrap;
+import main.java.ulibs.net.message.data.MsgDataLongArray.ArrayWrap;
 
-public class MsgDataDoubleArray extends MessageData<ArrayWrap> {
-	public MsgDataDoubleArray(double[] data) {
+public class MsgDataLongArray extends MessageData<ArrayWrap> {
+	public MsgDataLongArray(long[] data) {
 		super(new ArrayWrap(data));
 	}
 	
 	@Override
 	protected byte[] returnNewCache() {
 		ByteBuffer buf = ByteBuffer.allocate(data.array.length * 8);
-		for (double f : data.array) {
-			buf.putDouble(f);
+		for (long f : data.array) {
+			buf.putLong(f);
 		}
 		
 		return buf.array();
@@ -23,7 +23,7 @@ public class MsgDataDoubleArray extends MessageData<ArrayWrap> {
 	
 	@Override
 	public void fromBytes(byte[] data) {
-		double[] doubles = new double[data.length / 8];
+		long[] longs = new long[data.length / 8];
 		
 		for (int i = 0; i < data.length / 8; i++) {
 			byte[] tempBytes = new byte[8];
@@ -37,13 +37,13 @@ public class MsgDataDoubleArray extends MessageData<ArrayWrap> {
 			tempBytes[7] = data[i * 8 + 7];
 			
 			try {
-				doubles[i] = ByteH.getDouble(tempBytes);
+				longs[i] = ByteH.getLong(tempBytes);
 			} catch (ByteException e) {
 				e.printStackTrace();
 			}
 		}
 		
-		this.data = new ArrayWrap(doubles);
+		this.data = new ArrayWrap(longs);
 	}
 	
 	@Override
@@ -52,9 +52,9 @@ public class MsgDataDoubleArray extends MessageData<ArrayWrap> {
 	}
 	
 	static class ArrayWrap {
-		private final double[] array;
+		private final long[] array;
 		
-		private ArrayWrap(double[] array) {
+		private ArrayWrap(long[] array) {
 			this.array = array;
 		}
 	}

@@ -25,7 +25,7 @@ import main.java.ulibs.net.exceptions.NetworkException.Reason;
 import main.java.ulibs.net.message.Message;
 import main.java.ulibs.net.utils.Connection;
 
-public class ClientNetwork implements Runnable {
+public abstract class ClientNetwork implements Runnable {
 	private final List<Message> sendQueue = new ArrayList<Message>();
 	private volatile boolean shouldConnect, isConnected;
 	
@@ -59,6 +59,10 @@ public class ClientNetwork implements Runnable {
 		isConnected = false;
 	}
 	
+	public abstract void onFailedToConnect();
+	
+	public abstract void onConnectionLost();
+	
 	@Override
 	public void run() {
 		Console.print(WarningType.Info, "Started Client Network Handler!");
@@ -91,7 +95,7 @@ public class ClientNetwork implements Runnable {
 							continue;
 						}
 						
-						for (Message msg : CollectionsH.copyList(sendQueue)) {
+						for (Message msg : CollectionsH.copyList((ArrayList<Message>) sendQueue)) {
 							if (msg != null) {
 								obj.sendMessage(msg);
 								sendQueue.remove(msg);
@@ -107,6 +111,7 @@ public class ClientNetwork implements Runnable {
 						shouldConnect = false;
 						isConnected = false;
 						Console.print(WarningType.Error, e.getLocalizedMessage());
+						onFailedToConnect();
 					} else {
 						e.printStackTrace();
 					}
@@ -136,6 +141,7 @@ public class ClientNetwork implements Runnable {
 		public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) {
 			if (cause instanceof IOException) {
 				Console.print(WarningType.Error, cause.getLocalizedMessage());
+				onConnectionLost();
 			} else {
 				cause.printStackTrace();
 			}

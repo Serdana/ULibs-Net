@@ -4,6 +4,10 @@ import main.java.ulibs.common.helpers.ByteH;
 import main.java.ulibs.common.utils.exceptions.ByteException;
 
 public class MsgDataFloat extends MessageData<Float> {
+	public MsgDataFloat(float data) {
+		super(data);
+	}
+	
 	@Override
 	protected byte[] returnNewCache() {
 		return ByteH.getBytes(data);
