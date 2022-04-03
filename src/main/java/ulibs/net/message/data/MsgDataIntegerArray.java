@@ -3,12 +3,12 @@ package main.java.ulibs.net.message.data;
 import java.nio.ByteBuffer;
 
 import main.java.ulibs.common.helpers.ByteH;
+import main.java.ulibs.common.utils.ArrayWrap;
 import main.java.ulibs.common.utils.exceptions.ByteException;
-import main.java.ulibs.net.message.data.MsgDataIntegerArray.ArrayWrap;
 
-public class MsgDataIntegerArray extends MessageData<ArrayWrap> {
+public class MsgDataIntegerArray extends MessageData<ArrayWrap.Integer> {
 	public MsgDataIntegerArray(int[] data) {
-		super(new ArrayWrap(data));
+		super(new ArrayWrap.Integer(data));
 	}
 	
 	@Override
@@ -39,19 +39,11 @@ public class MsgDataIntegerArray extends MessageData<ArrayWrap> {
 			}
 		}
 		
-		this.data = new ArrayWrap(ints);
+		this.data = new ArrayWrap.Integer(ints);
 	}
 	
 	@Override
 	public short defaultSize() {
 		return 0;
-	}
-	
-	static class ArrayWrap {
-		private final int[] array;
-		
-		private ArrayWrap(int[] array) {
-			this.array = array;
-		}
 	}
 }

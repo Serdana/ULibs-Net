@@ -2,11 +2,11 @@ package main.java.ulibs.net.message.data;
 
 import java.nio.ByteBuffer;
 
-import main.java.ulibs.net.message.data.MsgDataBooleanArray.ArrayWrap;
+import main.java.ulibs.common.utils.ArrayWrap;
 
-public class MsgDataBooleanArray extends MessageData<ArrayWrap> {
+public class MsgDataBooleanArray extends MessageData<ArrayWrap.Boolean> {
 	public MsgDataBooleanArray(boolean[] data) {
-		super(new ArrayWrap(data));
+		super(new ArrayWrap.Boolean(data));
 	}
 	
 	@Override
@@ -27,19 +27,11 @@ public class MsgDataBooleanArray extends MessageData<ArrayWrap> {
 			booleans[i] = data[i] == 1;
 		}
 		
-		this.data = new ArrayWrap(booleans);
+		this.data = new ArrayWrap.Boolean(booleans);
 	}
 	
 	@Override
 	public short defaultSize() {
 		return 0;
-	}
-	
-	static class ArrayWrap {
-		private final boolean[] array;
-		
-		private ArrayWrap(boolean[] array) {
-			this.array = array;
-		}
 	}
 }
